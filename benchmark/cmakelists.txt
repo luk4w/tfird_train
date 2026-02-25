@@ -1,0 +1,45 @@
+cmake_minimum_required(VERSION 3.15)
+project(ModelBenchmark CXX)
+
+# Exigir C++17 ou superior (necessário para a chess.hpp)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+include(FetchContent)
+
+# ==============================================================================
+# 1. Download Automático do ONNX Runtime (VERSÃO GPU!)
+# ==============================================================================
+set(ORT_VERSION "1.24.1" CACHE STRING "ONNX Runtime version to download")
+message(STATUS "Baixando/Configurando ONNX Runtime versão: ${ORT_VERSION} (GPU)")
+
+FetchContent_Declare(
+    onnxruntime
+    URL "https://github.com/microsoft/onnxruntime/releases/download/v${ORT_VERSION}/onnxruntime-win-x64-gpu-${ORT_VERSION}.zip"
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
+FetchContent_MakeAvailable(onnxruntime)
+
+# ==============================================================================
+# 2. Executável de Benchmark
+# ==============================================================================
+add_executable(${PROJECT_NAME} model_benchmark.cpp)
+
+target_include_directories(${PROJECT_NAME} PRIVATE "${onnxruntime_SOURCE_DIR}/include")
+target_link_directories(${PROJECT_NAME} PRIVATE "${onnxruntime_SOURCE_DIR}/lib")
+target_link_libraries(${PROJECT_NAME} PRIVATE onnxruntime)
+
+# ==============================================================================
+# 3. Pós-Build: Copiar as DLLs da GPU
+# ==============================================================================
+# A versão GPU precisa dessas DLLs extras para se comunicar com sua placa NVIDIA
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${onnxruntime_SOURCE_DIR}/lib/onnxruntime.dll" $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${onnxruntime_SOURCE_DIR}/lib/onnxruntime_providers_shared.dll" $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${onnxruntime_SOURCE_DIR}/lib/onnxruntime_providers_cuda.dll" $<TARGET_FILE_DIR:${PROJECT_NAME}>
+)

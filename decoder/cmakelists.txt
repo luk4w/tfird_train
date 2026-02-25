@@ -1,0 +1,19 @@
+cmake_minimum_required(VERSION 3.18)
+project(decoder LANGUAGES CXX CUDA)
+
+set(CMAKE_CUDA_STANDARD 17)
+
+# Gera uma DLL (SHARED)
+add_library(${PROJECT_NAME} SHARED decoder.cu)
+
+# Configurações de compilação para Windows
+set_target_properties(${PROJECT_NAME} PROPERTIES 
+    PREFIX ""
+    CUDA_SEPARABLE_COMPILATION ON
+    MSVC_RUNTIME_LIBRARY "MultiThreadedDLL"
+)
+
+# Detecta automaticamente a arquitetura da GPU conectada
+if(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
+    set(CMAKE_CUDA_ARCHITECTURES "native")
+endif()

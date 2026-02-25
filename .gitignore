@@ -1,0 +1,7 @@
+__pycache__
+build
+*.bin
+*.pt
+*.zst
+*.onnx
+*.exe
