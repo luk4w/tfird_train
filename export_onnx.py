@@ -54,13 +54,13 @@ if __name__ == "__main__":
         description="Export one or more PyTorch checkpoints to ONNX."
     )
     parser.add_argument(
-        "checkpoints",
+        "models",
         nargs="*",
-        help="paths or glob patterns to .pt files. Defaults to checkpoint_*.pt",
+        help="paths or glob patterns to .pt files. Defaults to *.pt",
     )
     args = parser.parse_args()
 
-    patterns = args.checkpoints or ["checkpoint_*.pt"]
+    patterns = args.models or ["*.pt"]
     paths = []
     for pat in patterns:
         paths.extend(glob.glob(pat))
