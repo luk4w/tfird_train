@@ -306,20 +306,19 @@ def train(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Treinamento da Rede Neural AlphaZero para Xadrez')
     
-    parser.add_argument('--train-path', type=str, default='dataset_treino.bin', help='Caminho para o dataset de treino')
-    parser.add_argument('--test-path', type=str, default='dataset_teste.bin', help='Caminho para o dataset de teste')
+    parser.add_argument('--train-path', type=str, required=True, help='Caminho obrigatório para o dataset de treino')
+    parser.add_argument('--test-path', type=str, required=True, help='Caminho obrigatório para o dataset de teste')
     parser.add_argument('--decoder-path', type=str, default='./decoder.dll', help='Caminho para a DLL do CUDA')
     parser.add_argument('--checkpoint-path', type=str, default='checkpoint_latest.pt', help='Caminho de restore')
     
     parser.add_argument('--batch-size', type=int, default=4096, help='Tamanho do batch')
     parser.add_argument('--epochs', type=int, default=12, help='Número de épocas')
     parser.add_argument('--lr', type=float, default=1e-3, help='Taxa de aprendizado (Learning Rate)')
-    parser.add_argument('--max-samples', type=int, default=None, help='Limitar registros para testes rápidos')
-    
+    parser.add_argument('--max-samples', type=int, default=None, help='Limitar registros para testes rápidos (ex: 26000000 para 10%)')
+
     parser.add_argument('--channels', type=int, default=128, help='Canais da ResNet')
     parser.add_argument('--res-blocks', type=int, default=12, help='Blocos residuais')
     
     args = parser.parse_args()
-    
+        
     train(args)
-
