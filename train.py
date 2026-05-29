@@ -300,8 +300,8 @@ def train(args):
             'scaler':    scaler.state_dict(),
         }
         torch.save(checkpoint, 'checkpoint_latest.pt')
-        torch.save(checkpoint, f'checkpoint_epoch{epoch+1}_ft.pt')
-        print(f"Modelo salvo: checkpoint_epoch{epoch+1}_ft.pt")
+        torch.save(checkpoint, f'checkpoint_epoch{epoch+1}.pt')
+        print(f"Modelo salvo: checkpoint_epoch{epoch+1}.pt")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Treinamento da Rede Neural AlphaZero para Xadrez')
