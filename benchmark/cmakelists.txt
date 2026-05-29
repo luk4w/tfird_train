@@ -11,11 +11,20 @@ include(FetchContent)
 # 1. Download Automático do ONNX Runtime (VERSÃO GPU!)
 # ==============================================================================
 set(ORT_VERSION "1.24.1" CACHE STRING "ONNX Runtime version to download")
-message(STATUS "Baixando/Configurando ONNX Runtime versão: ${ORT_VERSION} (GPU)")
+set(ORT_CUDA_VARIANT "cuda13" CACHE STRING "CUDA variant: 'cuda12' (default no nome do pacote) ou 'cuda13'")
+message(STATUS "Baixando/Configurando ONNX Runtime versão: ${ORT_VERSION} (GPU ${ORT_CUDA_VARIANT})")
+
+# CUDA 12: pacote chama-se 'onnxruntime-win-x64-gpu-X.Y.Z.zip'
+# CUDA 13: pacote chama-se 'onnxruntime-win-x64-gpu_cuda13-X.Y.Z.zip'
+if(ORT_CUDA_VARIANT STREQUAL "cuda13")
+    set(ORT_PKG "onnxruntime-win-x64-gpu_cuda13-${ORT_VERSION}")
+else()
+    set(ORT_PKG "onnxruntime-win-x64-gpu-${ORT_VERSION}")
+endif()
 
 FetchContent_Declare(
     onnxruntime
-    URL "https://github.com/microsoft/onnxruntime/releases/download/v${ORT_VERSION}/onnxruntime-win-x64-gpu-${ORT_VERSION}.zip"
+    URL "https://github.com/microsoft/onnxruntime/releases/download/v${ORT_VERSION}/${ORT_PKG}.zip"
     DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 FetchContent_MakeAvailable(onnxruntime)
